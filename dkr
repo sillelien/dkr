@@ -1,0 +1,6 @@
+case "$1" in
+        comp|co|compose) shift; docker-compose $@ ;;
+        mac|mc|machine) shift; docker-machine $@ ;;
+        swm|swarm) shift; docker-swarm $@ ;;
+        *) docker $@ ;;
+esac
