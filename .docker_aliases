@@ -1,0 +1,10 @@
+drm() { docker rm $(docker ps -q -a); }
+dri() { docker rmi $(docker images -q); }
+
+alias drun="docker run -t -i -P"
+alias dcup="docker-compose up"
+alias dcbu="docker-compose kill; docker-compose rm;docker-compose build && docker-compose up"
+
+dweb() {
+	open "http://$(docker-machine ip default):8080/$1"
+}
