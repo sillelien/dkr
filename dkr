@@ -1,4 +1,28 @@
+#!/bin/bash
 eval "$(docker-machine env default)"
+help=$(
+cat <<EOF
+Usage: dkr <command> [<args>]
+
+Commands are:
+
+comp|co|compose <args>          docker-compose <args>
+mac|mc|machine  <args>          docker-machine <args>
+swm|swarm <args>                docker-swarm  <args>
+cup <args>                      docker-compose up <args>
+cru                             docker-compose kill; docker-compose rm; docker-compose build && docker-compose up
+it <args>                       docker run -t -i -P <args>
+open <port> [<url>]             opens a browser on macs at port and url on docker default host
+clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
+bash <args>                     docker run -t -i <args> /bin/bash 
+make                            docker build -t this .
+do                              docker run -t -i $@ this
+help                            this info
+
+If not recognized the arguments are passed directly to the `docker` command.
+
+EOF
+)
 case "$1" in
         comp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
@@ -6,11 +30,11 @@ case "$1" in
         cup) shift; docker-compose up $@ ;;
         crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i -P $@ ;;
-        open) shift; open "http://$(docker-machine ip default):$1" ;;
+        open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
         clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
-	bash) shift; docker run -t -i $1 /bin/bash ;;
+	bash) shift; docker run -t -i $@ /bin/bash ;;
 	make) shift; docker build -t this . ;;
 	do) shift; docker run -t -i $@ this ;;
-        help) echo "comp|mac|swm|cup|crun|it|bash|make|do" ;;
+        help) echo "$help" ;;
         *) docker $@ ;;
 esac
