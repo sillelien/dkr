@@ -38,9 +38,9 @@ function bishbashbosh() {
 }
 
 function repl() {
-	while read i
+	while read -p "dkr> " i
 	do
-	   command $i
+	   command $i || :
 	done
 }
 
