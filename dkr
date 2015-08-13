@@ -38,6 +38,7 @@ case "$1" in
         mac|mc|machine) shift; docker-machine $@ ;;
         swm|swarm) shift; docker-swarm $@ ;;
         cup) shift; docker-compose up $@ ;;
+        cbuild) shift; docker-compose build $@ ;;
         crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i -P $@ ;;
         open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
