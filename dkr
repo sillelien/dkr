@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 eval "$(docker-machine env default)"
 me=`basename "$0"`
 if [[ $me == "_dkr" ]]
@@ -78,6 +78,24 @@ function build_recursive() {
     done
 }
 
+
+function killall() {
+    if (( $# == 0 ))
+    then
+        containers="$(docker ps -q)" || :
+    else
+        containers="$(docker ps -q | grep "$1")" || :
+    fi
+
+    if [[ -n $containers ]]
+    then
+        docker kill $containers
+    else
+        echo "No containers match $1"
+    fi
+
+}
+
 function command() {
     case "$1" in
         cmp|co|compose) shift; docker-compose $@ ;;
@@ -94,7 +112,7 @@ function command() {
         do|rn|run) shift; docker run -t -i $@ this ;;
         exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         tag) shift; tag $@ ;;
-        kill) shift; docker kill $(docker ps -q) ;;
+        killall) shift; killall $@ ;;
         bldrec) shift; build_recursive $@ ;;
         update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me from GitHub branch $branch";;
         hlp|help|usage) usage ;;

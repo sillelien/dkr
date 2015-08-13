@@ -11,11 +11,19 @@ sudo curl -L https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/l
 
 ## Use
 
-```
+```bash
 dkr help
 ```
 
-## Examples
+To get the latest version of the script
+
+```bash
+dkr update
+```
+
+## Commands
+
+### Clean
 
 To remove all images and containers to free up space:
 
@@ -23,13 +31,16 @@ To remove all images and containers to free up space:
   dkr clean
 ```  
 
+### Bash Shell
+
 To run a bash shell in Ubuntu (maybe to check how a command works or something).
 
 ```
    dkr bash
 ```   
 
-Contributing
+
+## Contributing
 
 Please fork and switch to the dev branch and create PRs from their.
 
