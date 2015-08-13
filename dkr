@@ -96,7 +96,7 @@ function command() {
         tag) shift; tag $@ ;;
         kill) shift; docker kill $(docker ps -q) ;;
         bldrec) shift; build_recursive $@ ;;
-        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me on branch $branch";;
+        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me from GitHub branch $branch";;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
