@@ -1,5 +1,4 @@
-Just read the dkr file for now please :-)
-
+To install
 ```
-sudo curl https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/local/bin/dkr && chmod 755 /usr/local/bin/dkr
+sudo wget https://raw.githubusercontent.com/sillelien/dkr/master/dkr -O /usr/local/bin/dkr && chmod 755 /usr/local/bin/dkr
 ```
