@@ -4,7 +4,9 @@ eval "$(docker-machine env default)"
 
 function help() {
 cat <<'EOF'
-Usage: dkr <command> [<args>]
+Usage: dkr [ <command> [<args>] ]
+
+If no arguments are supplied a dkr> prompt is started and commands can be typed directly without the dkr prefix.
 
 Commands are:
 
