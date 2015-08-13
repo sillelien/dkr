@@ -8,17 +8,17 @@ Usage: dkr <command> [<args>]
 
 Commands are:
 
-comp|co|compose <args>          docker-compose <args>
+cmp|co|compose <args>          docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
-swm|swarm <args>                docker-swarm  <args>
+swm|sw|swarm <args>                docker-swarm  <args>
 cup <args>                      docker-compose up <args>
-crun                            docker-compose kill; docker-compose rm; \
+crn|crun                            docker-compose kill; docker-compose rm; \
                 		docker-compose build && docker-compose up
 it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
-clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
+cln|clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 bash <args>                     docker run -t -i <args> /bin/bash 
-make|bld [<tag>] [<dir>]        docker build -t <tag> <dir>
+bld|make [<tag>] [<dir>]        docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
 ex                              docker exec into the last container created
 
@@ -37,6 +37,14 @@ function bishbashbosh() {
   fi
 }
 
+function repl() {
+	while read i
+	do
+	   command $i
+	done
+}
+
+function command() {
 case "$1" in
         cmp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
@@ -54,3 +62,11 @@ case "$1" in
         hlp|help) help ;;
         *) docker $@ ;;
 esac
+}
+
+if (( $# == 0 ))
+then
+    repl
+else    
+    command $@
+fi    
