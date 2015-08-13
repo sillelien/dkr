@@ -43,7 +43,7 @@ case "$1" in
         open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
         clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 	bash) shift; bishbashbosh $@
-	make|bld) shift; docker build -t ${1:-this} . ;;
+	make|bld) shift; docker build -t ${1:-this} ${2:-.} ;;
 	do) shift; docker run -t -i $@ this ;;
 	ex) shift; docker exec -it $(docker ps -q | head -n 1) bash
         help) help ;;
