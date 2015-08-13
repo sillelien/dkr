@@ -1,4 +1,4 @@
-#dkr
+#dkr [![Experimental](https://img.shields.io/badge/Status-Experimental_or_POC-red.svg?style=flat)](http://github.com/sillelien/dkr)
 
 A command to make life easier when using Docker on the CLI.
 
