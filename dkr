@@ -1,23 +1,26 @@
 #!/bin/bash
+set -e
 eval "$(docker-machine env default)"
 
 function help() {
 cat <<'EOF'
-Usage: dkr <command> [<args>]
+Usage: dkr [ <command> [<args>] ]
+
+If no arguments are supplied a dkr> prompt is started and commands can be typed directly without the dkr prefix.
 
 Commands are:
 
-comp|co|compose <args>          docker-compose <args>
+cmp|co|compose <args>          docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
-swm|swarm <args>                docker-swarm  <args>
+swm|sw|swarm <args>                docker-swarm  <args>
 cup <args>                      docker-compose up <args>
-crun                            docker-compose kill; docker-compose rm; \
+crn|crun                            docker-compose kill; docker-compose rm; \
                 		docker-compose build && docker-compose up
 it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
-clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
+cln|clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 bash <args>                     docker run -t -i <args> /bin/bash 
-make|build [<tag>] [<dir>]      docker build -t <tag> <dir>
+bld|make [<tag>] [<dir>]        docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
 ex                              docker exec into the last container created
 
@@ -36,20 +39,36 @@ function bishbashbosh() {
   fi
 }
 
+function repl() {
+	while read -p "dkr> " i
+	do
+	   command $i || :
+	done
+}
+
+function command() {
 case "$1" in
-        comp|co|compose) shift; docker-compose $@ ;;
+        cmp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
-        swm|swarm) shift; docker-swarm $@ ;;
+        swm|sw|swarm) shift; docker-swarm $@ ;;
         cup) shift; docker-compose up $@ ;;
-        cbuild) shift; docker-compose build $@ ;;
-        crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
+        cbd|cbuild) shift; docker-compose build $@ ;;
+        crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i -P $@ ;;
-        open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
-        clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
-	bash) shift; bishbashbosh $@ ;;
-	make|bld) shift; docker build -t ${1:-this} ${2:-.} ;;
+        opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
+        cln|clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
+	bsh|bash) shift; bishbashbosh $@ ;;
+	bld|make) shift; docker build -t ${1:-this} ${2:-.} ;;
 	do) shift; docker run -t -i $@ this ;;
-	ex) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
-        help) help ;;
+	exe|ex) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
+        hlp|help) help ;;
         *) docker $@ ;;
 esac
+}
+
+if (( $# == 0 ))
+then
+    repl
+else    
+    command $@
+fi    
