@@ -89,7 +89,7 @@ function command() {
         tag) shift; tag $@ ;;
         kill) shift; docker kill $(docker ps -q) ;;
         bldrec) shift; build_recursive $@ ;;
-        update) sudo curl -L https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/local/bin/dkr && sudo chmod 755 /usr/local/bin/dkr ;;
+        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/local/bin/dkr && sudo chmod 755 /usr/local/bin/dkr && echo "Updated";;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
