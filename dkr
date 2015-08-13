@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 eval "$(docker-machine env default)"
+me=`basename "$0"`
+if [[ $me == "_dkr" ]]
+then
+    branch=dev
+else
+    branch=master
+fi
 
 function usage() {
 cat <<'EOF'
@@ -89,7 +96,7 @@ function command() {
         tag) shift; tag $@ ;;
         kill) shift; docker kill $(docker ps -q) ;;
         bldrec) shift; build_recursive $@ ;;
-        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/local/bin/dkr && sudo chmod 755 /usr/local/bin/dkr && echo "Updated";;
+        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated";;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
