@@ -22,7 +22,6 @@ help                            this info
 If not recognized the arguments are passed directly to the `docker` command.
 
 EOF
-)
 }
 case "$1" in
         comp|co|compose) shift; docker-compose $@ ;;
