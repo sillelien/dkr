@@ -35,6 +35,6 @@ case "$1" in
 	bash) shift; docker run -t -i $@ /bin/bash ;;
 	make) shift; docker build -t this . ;;
 	do) shift; docker run -t -i $@ this ;;
-        help) help() ;;
+        help) help ;;
         *) docker $@ ;;
 esac
