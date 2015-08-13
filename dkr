@@ -66,7 +66,7 @@ function tag() {
 ## bldrec . foo/bar
 function build_recursive() {
     find "$1" -name "Dockerfile" | while read f; do
-        docker build -t "$2-$(echo "$f" | cut -d "/" -f 2- | rev | cut -d "/" -f 2- | rev | sed -e 's/\//-/g')" "$1"
+        docker build -t "$2-$(echo "$f" | cut -d "/" -f 2- | rev | cut -d "/" -f 2- | rev | sed -e 's/\//-/g')" "$f"
     done
 }
 
