@@ -18,7 +18,7 @@ it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
 clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 bash <args>                     docker run -t -i <args> /bin/bash 
-make|bld [<tag>] [<dir>]      docker build -t <tag> <dir>
+make|bld [<tag>] [<dir>]        docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
 ex                              docker exec into the last container created
 
