@@ -10,6 +10,7 @@ If no arguments are supplied a dkr> prompt is started and commands can be typed 
 
 Commands are:
 
+update                          get the latest version of this script (curl must be installed)
 cmp|co|compose <args>           docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
 swm|sw|swarm <args>             docker-swarm  <args>
@@ -88,6 +89,7 @@ function command() {
         tag) shift; tag $@ ;;
         kill) shift; docker kill $(docker ps -q) ;;
         bldrec) shift; build_recursive $@ ;;
+        update) sudo curl -L https://raw.githubusercontent.com/sillelien/dkr/master/dkr > /usr/local/bin/dkr && sudo chmod 755 /usr/local/bin/dkr ;;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
