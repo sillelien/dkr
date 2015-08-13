@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 eval "$(docker-machine env default)"
+version=0.0.1
 me=`basename "$0"`
 if [[ $me == "_dkr" ]]
 then
@@ -10,7 +11,9 @@ else
 fi
 
 function usage() {
+echo "dkr v${version}"
 cat <<'EOF'
+
 Usage: dkr [ <command> [<args>] ]
 
 If no arguments are supplied a dkr> prompt is started and commands can be typed directly without the dkr prefix.
@@ -78,6 +81,24 @@ function build_recursive() {
     done
 }
 
+
+function killall() {
+    if (( $# == 0 ))
+    then
+        containers="$(docker ps -q)" || :
+    else
+        containers="$(docker ps -q | grep "$1")" || :
+    fi
+
+    if [[ -n $containers ]]
+    then
+        docker kill $containers
+    else
+        echo "No containers match $1"
+    fi
+
+}
+
 function command() {
     case "$1" in
         cmp|co|compose) shift; docker-compose $@ ;;
@@ -94,9 +115,10 @@ function command() {
         do|rn|run) shift; docker run -t -i $@ this ;;
         exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         tag) shift; tag $@ ;;
-        kill) shift; docker kill $(docker ps -q) ;;
+        killall) shift; killall $@ ;;
         bldrec) shift; build_recursive $@ ;;
-        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me from GitHub branch $branch";;
+        version) echo $version ;;
+        update) sudo curl -q -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me to version $($me version)($branch)";;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
