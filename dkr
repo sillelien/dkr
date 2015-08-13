@@ -27,7 +27,7 @@ EOF
 function bishbashbosh() {
   if (( $# == 0 )) 
   then
-  	docker run -t -i ubuntu:14.04 /bin/bash ;;	
+  	docker run -t -i ubuntu:14.04 /bin/bash 	
   else
   	docker run -t -i $@ /bin/bash 	
   fi
