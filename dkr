@@ -2,7 +2,7 @@
 set -e
 eval "$(docker-machine env default)"
 
-function help() {
+function usage() {
 cat <<'EOF'
 Usage: dkr [ <command> [<args>] ]
 
@@ -10,19 +10,22 @@ If no arguments are supplied a dkr> prompt is started and commands can be typed 
 
 Commands are:
 
-cmp|co|compose <args>          docker-compose <args>
+cmp|co|compose <args>           docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
-swm|sw|swarm <args>                docker-swarm  <args>
+swm|sw|swarm <args>             docker-swarm  <args>
 cup <args>                      docker-compose up <args>
-crn|crun                            docker-compose kill; docker-compose rm; \
-                		docker-compose build && docker-compose up
+crn|crun                        docker-compose kill; docker-compose rm; \
+                		            docker-compose build && docker-compose up
 it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
-cln|clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
+cln|clean                       docker rmi $(docker images -q); docker rm $(docker ps -q -a)
 bash <args>                     docker run -t -i <args> /bin/bash 
 bld|make [<tag>] [<dir>]        docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
 ex                              docker exec into the last container created
+tag                             Tags an image with multiple repositories and/or tags
+                                    Usage: dkr tag foo/bar {}:latest {}:0.1 quay.io/{}:0.1
+                                    Usage: dkr tag this foo/bar quay.io/{}:0.1
 
 help                            this info
 
@@ -31,23 +34,44 @@ EOF
 }
 
 function bishbashbosh() {
-  if (( $# == 0 )) 
-  then
-  	docker run -t -i ubuntu:14.04 /bin/bash 	
-  else
-  	docker run -t -i $@ /bin/bash 	
-  fi
+    if (( $# == 0 ))
+    then
+        docker run -t -i ubuntu:14.04 /bin/bash
+    else
+        docker run -t -i $@ /bin/bash
+    fi
 }
 
 function repl() {
 	while read -p "dkr> " i
 	do
-	   command $i || :
+        command ${i} || :
 	done
 }
 
+## tag foo/bar quay.io/{}:latest {}:latest quay.io/{}:0.1 {}:0.1
+## tag this foo/bar quay.io/{}:latest {}:latest quay.io/{}:0.1 {}:0.1
+function tag() {
+    if [[ "$1" = "this" ]]; then
+        for tag in ${@:3}; do
+            docker tag $1 "$(echo "$tag" | sed -e 's/{}/'"$2"'/g')"
+        done
+    else
+        for tag in ${@:2}; do
+            docker tag $1 "$(echo "$tag" | sed -e 's/{}/'"$1"'/g')"
+        done
+    fi
+}
+
+## bldrec . foo/bar
+function build_recursive() {
+    find "$1" -name "Dockerfile" | while read f; do
+        docker build -t "$2-$(echo "$f" | cut -d "/" -f 2- | rev | cut -d "/" -f 2- | rev | sed -e 's/\//-/g')" "$1"
+    done
+}
+
 function command() {
-case "$1" in
+    case "$1" in
         cmp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
         swm|sw|swarm) shift; docker-swarm $@ ;;
@@ -56,14 +80,17 @@ case "$1" in
         crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i -P $@ ;;
         opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
-        cln|clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
-	bsh|bash) shift; bishbashbosh $@ ;;
-	bld|make) shift; docker build -t ${1:-this} ${2:-.} ;;
-	do) shift; docker run -t -i $@ this ;;
-	exe|ex) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
-        hlp|help) help ;;
+        cln|clean)  docker rmi $(docker images -q); docker rmi $(docker images -q -f dangling=true); docker rm $(docker ps -q -a) ;;
+        bsh|bash) shift; bishbashbosh $@ ;;
+        bld|make) shift; docker build -t ${1:-this} ${2:-.} ;;
+        do|rn|run) shift; docker run -t -i $@ this ;;
+        exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
+        tag) shift; tag $@ ;;
+        kill) shift; docker kill $(docker ps -q) ;;
+        bldrec) shift; build_recursive $@ ;;
+        hlp|help|usage) usage ;;
         *) docker $@ ;;
-esac
+    esac
 }
 
 if (( $# == 0 ))
