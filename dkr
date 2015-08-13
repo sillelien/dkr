@@ -1,6 +1,7 @@
 #!/bin/bash
 eval "$(docker-machine env default)"
-help() {
+
+function help() {
 cat <<'EOF'
 Usage: dkr <command> [<args>]
 
@@ -20,9 +21,10 @@ do                              docker run -t -i $@ this
 help                            this info
 
 If not recognized the arguments are passed directly to the `docker` command.
-
 EOF
 }
+
+
 case "$1" in
         comp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
