@@ -11,32 +11,45 @@ comp|co|compose <args>          docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
 swm|swarm <args>                docker-swarm  <args>
 cup <args>                      docker-compose up <args>
-cru                             docker-compose kill; docker-compose rm; docker-compose build && docker-compose up
+crun                            docker-compose kill; docker-compose rm; \
+                		docker-compose build && docker-compose up
 it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
 clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 bash <args>                     docker run -t -i <args> /bin/bash 
-make                            docker build -t this .
+make|build [<tag>] [<dir>]      docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
+ex                              docker exec into the last container created
+
 help                            this info
 
 If not recognized the arguments are passed directly to the `docker` command.
 EOF
 }
 
+function bishbashbosh() {
+  if (( $# == 0 )) 
+  then
+  	docker run -t -i ubuntu:14.04 /bin/bash 	
+  else
+  	docker run -t -i $@ /bin/bash 	
+  fi
+}
 
 case "$1" in
         comp|co|compose) shift; docker-compose $@ ;;
         mac|mc|machine) shift; docker-machine $@ ;;
         swm|swarm) shift; docker-swarm $@ ;;
         cup) shift; docker-compose up $@ ;;
+        cbuild) shift; docker-compose build $@ ;;
         crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i -P $@ ;;
         open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
         clean)  docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
-	bash) shift; docker run -t -i $@ /bin/bash ;;
-	make) shift; docker build -t this . ;;
+	bash) shift; bishbashbosh $@ ;;
+	make|bld) shift; docker build -t ${1:-this} ${2:-.} ;;
 	do) shift; docker run -t -i $@ this ;;
+	ex) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         help) help ;;
         *) docker $@ ;;
 esac
