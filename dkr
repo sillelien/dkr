@@ -11,13 +11,16 @@ comp|co|compose <args>          docker-compose <args>
 mac|mc|machine  <args>          docker-machine <args>
 swm|swarm <args>                docker-swarm  <args>
 cup <args>                      docker-compose up <args>
-crun                            docker-compose kill; docker-compose rm; docker-compose build && docker-compose up
+crun                            docker-compose kill; docker-compose rm; \
+                		docker-compose build && docker-compose up
 it <args>                       docker run -t -i -P <args>
 open <port> [<url>]             opens a browser on macs at port and url on docker default host
 clean                           docker rmi $(docker images -q); docker rm $(docker ps -q -a) ;;
 bash <args>                     docker run -t -i <args> /bin/bash 
 make|build [<tag>] [<dir>]      docker build -t <tag> <dir>
 do                              docker run -t -i $@ this
+ex                              docker exec into the last container created
+
 help                            this info
 
 If not recognized the arguments are passed directly to the `docker` command.
