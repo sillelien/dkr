@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
+
+if ! docker-machine ls | grep default | grep Running
+then
+    docker-machine start default
+fi
+
 eval "$(docker-machine env default)"
-version=0.0.1
+
+version=0.0.2
 me=`basename "$0"`
 if [[ $me == "_dkr" ]]
 then
@@ -9,6 +16,7 @@ then
 else
     branch=master
 fi
+
 
 function usage() {
 echo "dkr v${version}"
@@ -107,7 +115,7 @@ function command() {
         cup) shift; docker-compose up $@ ;;
         cbd|cbuild) shift; docker-compose build $@ ;;
         crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
-        it) shift; docker run -t -i -P $@ ;;
+        it) shift; docker run -t -i  $@ ;;
         opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
         cln|clean)  docker rmi $(docker images -q); docker rmi $(docker images -q -f dangling=true); docker rm $(docker ps -q -a) ;;
         bsh|bash) shift; bishbashbosh $@ ;;
