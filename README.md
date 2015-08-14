@@ -1,6 +1,8 @@
 #dkr
 
-A command to make life easier when using Docker on the CLI.
+A command to make life easier when using Docker on the CLI, it is designed as a development tool and therefore makes some assumptions about your development environment.
+
+Only tested on my Mac laptop so:
 
 Pull requests and Issues welcome!
 
@@ -21,6 +23,7 @@ To get the latest version of the script
 dkr update
 ```
 
+##
 ## Commands
 
 ### Clean
