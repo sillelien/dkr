@@ -108,6 +108,13 @@ function killall() {
 
 }
 
+function update() {
+    sleep 2
+    sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me
+    sudo chmod 755 /usr/local/bin/$me
+    echo "Updated $me to version $($me version)($branch)"
+}
+
 function command() {
     case "$1" in
         cmp|co|compose) shift; docker-compose $@ ;;
@@ -127,7 +134,7 @@ function command() {
         killall) shift; killall $@ ;;
         bldrec) shift; build_recursive $@ ;;
         version) echo $version ;;
-        update) ( sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me to version $($me version)($branch)" ) && exit 0;;
+        update) update & ;;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
