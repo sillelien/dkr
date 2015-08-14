@@ -127,7 +127,7 @@ function command() {
         killall) shift; killall $@ ;;
         bldrec) shift; build_recursive $@ ;;
         version) echo $version ;;
-        update) sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me to version $($me version)($branch)" && exit 0;;
+        update) ( sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me && sudo chmod 755 /usr/local/bin/$me && echo "Updated $me to version $($me version)($branch)" ) && exit 0;;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
