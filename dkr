@@ -18,6 +18,12 @@ else
     branch=master
 fi
 
+if [[ -f /usr/local/bin/.${me} ]]
+then
+    echo "Finishing update ..."
+    sudo mv -f /usr/local/bin/.${me} /usr/local/bin/${me}
+    exec /usr/local/bin/${me} $@
+fi
 
 function usage() {
 echo "dkr v${version}"
@@ -113,9 +119,10 @@ function killall() {
 
 function update() {
     sleep 2
-    sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/$me
-    sudo chmod 755 /usr/local/bin/$me
+    sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/.${me}
+    sudo chmod 755 /usr/local/bin/.${me}
     echo "Updated $me to version $($me version) ($branch)"
+    exec /usr/local/bin/.${me}
 }
 
 function command() {
