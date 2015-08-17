@@ -125,7 +125,7 @@ function command() {
         crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i  $@ ;;
         opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
-        cln|clean)  docker rmi $(docker images -q); docker rmi $(docker images -q -f dangling=true); docker rm $(docker ps -q -a) ;;
+        cln|clean)  docker rmi $(docker images -q); docker rmi $(docker images -q -f dangling=true); docker rm $(docker ps -q -a) ;  docker rmi $(docker images -q);;
         bsh|bash) shift; bishbashbosh $@ ;;
         bld|make) shift; docker build -t ${1:-this} ${2:-.} ;;
         do|rn|run) shift; docker run -t -i $@ this ;;
