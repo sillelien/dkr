@@ -147,7 +147,7 @@ function command() {
         fix-mac) shift; docker-machine restart ;;
         bldrec) shift; build_recursive $@ ;;
         version) echo $version ;;
-        update) update & ;;
+        update) update ;;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
