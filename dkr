@@ -122,7 +122,7 @@ function update() {
     sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/.${me}
     sudo chmod 755 /usr/local/bin/.${me}
     echo "Updated $me to version $($me version) ($branch)"
-    exec /usr/local/bin/.${me}
+    exec /usr/local/bin/.${me} version
 }
 
 function command() {
