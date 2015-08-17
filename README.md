@@ -23,8 +23,34 @@ To get the latest version of the script
 dkr update
 ```
 
-##
 ## Commands
+
+### Build and Run
+
+```
+    dkr do
+    dkr build-run
+```
+
+### Build Docker Image from this Directory
+
+```
+    dkr bld
+```    
+
+### Run Image built with `bld`
+
+```
+    dkr rn
+    dkr drun
+```    
+    
+### Open browser at port and path
+    
+```
+    dkr open 8080
+    dkr open 8080 subdir/file.html
+```
 
 ### Clean
 
@@ -41,33 +67,6 @@ To remove all images and containers even if they are in use to free up space:
   dkr fcn
   dkr force-clean
 ```  
-
-### Build Docker Image from this Directory
-
-```
-    dkr bld
-```    
-
-### Run Image built with `bld`
-
-```
-    dkr rn
-    dkr drun
-```    
-
-### Build and Run
-
-```
-    dkr do
-    dkr build-run
-```
-    
-### Open browser at port and path
-    
-```
-    dkr open 8080
-    dkr open 8080 subdir/file.html
-```
 
 ### Run Bash Shell
 
@@ -92,13 +91,13 @@ To run a bash shell in Ubuntu (maybe to check how a command works or something).
    dkr bash
 ```   
 
-## Self Update
+## Update dkr
 
 ```
    dkr upd
    dkr update-dkr
 ```
-   
+      
 ## Contributing
 
 Please fork and switch to the dev branch and create PRs from their.
@@ -109,5 +108,5 @@ To test the dev branch:
 sudo curl -L https://raw.githubusercontent.com/sillelien/dkr/dev/dkr > /usr/local/bin/_dkr && sudo chmod 755 /usr/local/bin/_dkr
 ```
 
-Then use the _dkr command instead of dkr for testing.
+Then use the _dkr command instead of dkr for testing, you can also use `_dkr update` safely as it will only update the dev version.
 
