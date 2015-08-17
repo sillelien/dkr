@@ -8,8 +8,8 @@ fi
 
 eval "$(docker-machine env default)"
 
-version=0.0.4
-me=`basename "$0"`
+version=0.0.5
+me=$(basename "$0")
 
 if [[ $me == "_dkr" ]]
 then
@@ -20,8 +20,8 @@ fi
 
 if [[ -f /usr/local/bin/.${me} ]]
 then
-    sudo mv -f /usr/local/bin/.${me} /usr/local/bin/${me}
-    exec /usr/local/bin/${me} $@
+    sudo mv -f "/usr/local/bin/.${me}" "/usr/local/bin/${me}"
+    exec "/usr/local/bin/${me}" "$@"
 fi
 
 function usage() {
@@ -66,14 +66,14 @@ function bishbashbosh() {
     then
         docker run -t -i ubuntu:14.04 /bin/bash
     else
-        docker run -t -i $@ /bin/bash
+        docker run -t -i "$@" /bin/bash
     fi
 }
 
 function repl() {
-	while read -p "dkr> " i
+	while read -r -p "dkr> " i
 	do
-        command ${i} || :
+        command "${i}" || :
 	done
 }
 
@@ -81,19 +81,19 @@ function repl() {
 ## tag this foo/bar quay.io/{}:latest {}:latest quay.io/{}:0.1 {}:0.1
 function tag() {
     if [[ "$1" = "this" ]]; then
-        for tag in ${@:3}; do
-            docker tag $1 "$(echo "$tag" | sed -e 's/{}/'"$2"'/g')"
+        for tag in "${@:3}"; do
+            docker tag "$1" "$(echo "$tag" | sed -e 's/{}/'"$2"'/g')"
         done
     else
-        for tag in ${@:2}; do
-            docker tag $1 "$(echo "$tag" | sed -e 's/{}/'"$1"'/g')"
+        for tag in "${@:2}"; do
+            docker tag "$1" "$(echo "$tag" | sed -e 's/{}/'"$1"'/g')"
         done
     fi
 }
 
 ## bldrec . foo/bar
 function build_recursive() {
-    find "$1" -name "Dockerfile" | while read f; do
+    find "$1" -name "Dockerfile" | while read -r f; do
         docker build -t "$2-$(echo "$f" | cut -d "/" -f 2- | rev | cut -d "/" -f 2- | rev | sed -e 's/\//-/g')" "$(echo "$f" | rev | cut -d "/" -f 2- | rev)/"
     done
 }
@@ -109,7 +109,7 @@ function killall() {
 
     if [[ -n $containers ]]
     then
-        docker kill $containers
+        docker kill "$containers"
     else
         echo "No containers match $1"
     fi
@@ -117,37 +117,37 @@ function killall() {
 }
 
 function update() {
-    sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr > /usr/local/bin/.${me}
-    sudo chmod 755 /usr/local/bin/.${me}
+    sudo curl -s -L https://raw.githubusercontent.com/sillelien/dkr/$branch/dkr -o "/usr/local/bin/.${me}"
+    sudo chmod 755 "/usr/local/bin/.${me}"
     echo "Updated $me to version: "
-    exec /usr/local/bin/${me} version
+    exec "/usr/local/bin/${me}" version
 }
 
 function command() {
     case "$1" in
-        cmp|co|compose) shift; docker-compose $@ ;;
-        mac|mc|machine) shift; docker-machine $@ ;;
-        swm|sw|swarm) shift; docker-swarm $@ ;;
-        cup) shift; docker-compose up $@ ;;
-        cbd|cbuild) shift; docker-compose build $@ ;;
+        cmp|co|compose) shift; docker-compose "$@" ;;
+        mac|mc|machine) shift; docker-machine "$@" ;;
+        swm|sw|swarm) shift; docker-swarm "$@" ;;
+        cup) shift; docker-compose up "$@" ;;
+        cbd|cbuild) shift; docker-compose build "$@" ;;
         crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
-        it) shift; docker run -t -i  $@ ;;
+        it) shift; docker run -t -i  "$@" ;;
         opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
-        cln|clean)  docker rmi $(docker images -q); docker rmi $(docker images -q -f dangling=true); docker rm $(docker ps -q -a) ;  docker rmi $(docker images -q);;
-        fcn|force-clean)  docker rmi -f $(docker images -q); docker rmi -f $(docker images -q -f dangling=true); docker rm -f $(docker ps -q -a) ;  docker rmi -f $(docker images -q);;
-        bsh|bash) shift; bishbashbosh $@ ;;
-        bld|make) shift; docker build -t ${1:-this} ${2:-.} ;;
-        rn|drun) shift; docker run -t -i $@ this ;;
-        do|build-run) shift; docker build -t ${1:-this} ${2:-.} && docker run -t -i ${@:3} this ;;
-        exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
-        tag) shift; tag $@ ;;
-        kal|killall) shift; killall $@ ;;
+        cln|clean)  docker rmi "$(docker images -q)"; docker rmi "$(docker images -q -f dangling=true)"; docker rm "$(docker ps -q -a)" ;  docker rmi "$(docker images -q)";;
+        fcn|force-clean)  docker rmi -f "$(docker images -q)"; docker rmi -f "$(docker images -q -f dangling=true)"; docker rm -f "$(docker ps -q -a)" ;  docker rmi -f "$(docker images -q)";;
+        bsh|bash) shift; bishbashbosh "$@" ;;
+        bld|make) shift; docker build -t "${1:-this}" "${2:-.}" ;;
+        rn|drun) shift; docker run -t -i "$@" this ;;
+        "do"|build-run) shift; docker build -t "${1:-this}" "${2:-.}" && docker run -t -i "${@:3}" this ;;
+        exe|ex|debug|dbg) shift; docker exec -it "$(docker ps -q | head -n 1)" bash ;;
+        tag) shift; tag "$@" ;;
+        kal|killall) shift; killall "$@" ;;
         fix-mac) shift; docker-machine restart default ;;
-        bldrec) shift; build_recursive $@ ;;
+        bldrec) shift; build_recursive "$@" ;;
         ver|version) echo $version ;;
         upd|update-dkr) update ;;
         hlp|help|usage) usage ;;
-        *) docker $@ ;;
+        *) docker "$@" ;;
     esac
 }
 
@@ -155,5 +155,5 @@ if (( $# == 0 ))
 then
     repl
 else    
-    command $@
+    command "$@"
 fi    
