@@ -20,7 +20,6 @@ fi
 
 if [[ -f /usr/local/bin/.${me} ]]
 then
-    echo "Finishing update ..."
     sudo mv -f /usr/local/bin/.${me} /usr/local/bin/${me}
     exec /usr/local/bin/${me} $@
 fi
