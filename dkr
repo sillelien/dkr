@@ -142,7 +142,7 @@ function command() {
         exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         tag) shift; tag $@ ;;
         killall) shift; killall $@ ;;
-        fix-mac) shift; docker-machine restart default restart ;;
+        fix-mac) shift; docker-machine restart default ;;
         bldrec) shift; build_recursive $@ ;;
         version) echo $version ;;
         update) update ;;
