@@ -44,7 +44,8 @@ bash <args>                     docker run -t -i <args> /bin/bash
 bld|make [<tag>] [<dir>]        docker build -t <tag> <dir>
 rn|drun                         docker run -t -i $@ this
 do|build-run [<tag>] [<dir>]    docker build -t <tag> <dir> && docker run -t -i this
-ex                              docker exec into the last container created
+ex|exe                          docker exec into the last container created
+fix-mac                         restart docker-machine
 tag                             Tags an image with multiple repositories and/or tags
                                     Usage: dkr tag foo/bar {}:latest {}:0.1 quay.io/{}:0.1
                                     Usage: dkr tag this foo/bar quay.io/{}:0.1
@@ -136,6 +137,7 @@ function command() {
         exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         tag) shift; tag $@ ;;
         killall) shift; killall $@ ;;
+        fix-mac) shift; docker-machine restart ;;
         bldrec) shift; build_recursive $@ ;;
         version) echo $version ;;
         update) update & ;;
