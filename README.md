@@ -92,7 +92,13 @@ To run a bash shell in Ubuntu (maybe to check how a command works or something).
    dkr bash
 ```   
 
+## Self Update
 
+```
+   dkr upd
+   dkr update-dkr
+```
+   
 ## Contributing
 
 Please fork and switch to the dev branch and create PRs from their.
