@@ -34,6 +34,56 @@ To remove all images and containers to free up space:
   dkr clean
 ```  
 
+
+To remove all images and containers even if they are in use to free up space:
+
+```
+  dkr fcn
+  dkr force-clean
+```  
+
+### Build Docker Image from this Directory
+
+```
+    dkr bld
+```    
+
+### Run Image built with `bld`
+
+```
+    dkr rn
+    dkr drun
+```    
+
+### Build and Run
+
+```
+    dkr do
+    dkr build-run
+```
+    
+### Open browser at port and path
+    
+```
+    dkr open 8080
+    dkr open 8080 subdir/file.html
+```
+
+### Run Bash Shell
+
+```
+    dkr bsh
+    dkr bash
+    dkr bash -v /var/run/docker.sock:/var/run/docker.sock debian:jessie
+```    
+
+
+### Fix Problems with docker-machine 
+
+```
+    dkr fix-mac
+```    
+
 ### Bash Shell
 
 To run a bash shell in Ubuntu (maybe to check how a command works or something).

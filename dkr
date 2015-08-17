@@ -141,11 +141,11 @@ function command() {
         do|build-run) shift; docker build -t ${1:-this} ${2:-.} && docker run -t -i ${@:3} this ;;
         exe|ex|debug|dbg) shift; docker exec -it $(docker ps -q | head -n 1) bash ;;
         tag) shift; tag $@ ;;
-        killall) shift; killall $@ ;;
+        kal|killall) shift; killall $@ ;;
         fix-mac) shift; docker-machine restart default ;;
         bldrec) shift; build_recursive $@ ;;
-        version) echo $version ;;
-        update) update ;;
+        ver|version) echo $version ;;
+        upd|update-dkr) update ;;
         hlp|help|usage) usage ;;
         *) docker $@ ;;
     esac
