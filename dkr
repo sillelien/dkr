@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e
 
-if ! docker-machine ls | grep default | grep Running &> /dev/null
+if ! docker-machine ls | grep default
 then
-    docker-machine start default  > /dev/null
+    echo "No running docker-machine called 'default', please use 'dkr mac-new' to fix"
+else
+    if ! docker-machine ls | grep default | grep Running &> /dev/null
+    then
+        docker-machine start default  > /dev/null
+    fi
 fi
 
 eval "$(docker-machine env default)" || :
