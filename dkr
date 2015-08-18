@@ -6,9 +6,9 @@ then
     docker-machine start default  > /dev/null
 fi
 
-eval "$(docker-machine env default)"
+eval "$(docker-machine env default)" || :
 
-version=0.0.5
+version=0.0.6
 me=$(basename "$0")
 
 if [[ $me == "_dkr" ]]
@@ -129,8 +129,8 @@ function command() {
         mac|mc|machine) shift; docker-machine "$@" ;;
         swm|sw|swarm) shift; docker-swarm "$@" ;;
         cup) shift; docker-compose up "$@" ;;
-        cbd|cbuild) shift; docker-compose build "$@" ;;
-        crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
+        cmp-build|cbd|cbuild) shift; docker-compose build "$@" ;;
+        cmp-run|crn|crun) docker-compose kill; docker-compose rm; docker-compose build && docker-compose up ;;
         it) shift; docker run -t -i  "$@" ;;
         opn|open) shift; open "http://$(docker-machine ip default):$1/$2" ;;
         cln|clean)  docker rmi "$(docker images -q)"; docker rmi "$(docker images -q -f dangling=true)"; docker rm "$(docker ps -q -a)" ;  docker rmi "$(docker images -q)";;
@@ -142,7 +142,9 @@ function command() {
         exe|ex|debug|dbg) shift; docker exec -it "$(docker ps -q | head -n 1)" bash ;;
         tag) shift; tag "$@" ;;
         kal|killall) shift; killall "$@" ;;
-        fix-mac) shift; docker-machine restart default ;;
+        mac-fix) shift; docker-machine restart default ;;
+        mac-rm) shift; docker-machine rm default ;;
+        mac-new) shift; docker-machine create -d virtualbox default ;;
         bldrec) shift; build_recursive "$@" ;;
         ver|version) echo $version ;;
         upd|update-dkr) update ;;
